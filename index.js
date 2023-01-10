@@ -1,10 +1,11 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
+mongoose.set("strictQuery", false); 
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const tourRoutes = require('./api/tour')
-const orderRoutes = require("./api/order");
+// const tourRoutes = require('./api/tour')
+// const orderRoutes = require("./api/order");
 
 // express app
 const app = express();
