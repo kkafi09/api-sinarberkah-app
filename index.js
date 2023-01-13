@@ -19,6 +19,7 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to express" });
 });
 
+
 // app.use("/api/tour", tourRoutes);
 
 // connect to db
