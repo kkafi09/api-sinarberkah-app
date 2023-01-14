@@ -12,6 +12,8 @@ router.post('/post', [
 ])
 
 router.get('/posts', galleryController.getAllGallery)
+router.get('/postsslide', galleryController.getSlideGallery)
+router.get('/post/:category',galleryController.getAllGalleryByCategory) 
 
 router.delete('/post/:galleryId', galleryController.deleteGallery)
 

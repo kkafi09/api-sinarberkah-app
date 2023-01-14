@@ -7,6 +7,7 @@ const path = require('path')
 
 const app = express();
 const galleryApi = require('./api/gallery')
+const userApi = require('./api/user')
 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -34,6 +35,11 @@ app.use('/images',express.static(path.join(__dirname, 'images')))
 app.use(multer({storage: fileStorage, fileFilter:fileFilter}).single('image'))
 
 app.use('/gallery', galleryApi)
+app.use('/user', userApi)
+
+const user = require("./api/user")
+app.use('/api', user)
+
 
 app.use((error,req,res,next) => {
   const status = error.erroStatus || 500

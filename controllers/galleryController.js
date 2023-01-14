@@ -43,6 +43,19 @@ exports.createGallery = (req, res, next) => {
 }
 
 exports.getAllGallery = (req, res, next) => {
+        galleryModel.find().sort({createdAt:-1})
+    .then(result => {
+        res.status(200).json({
+            message: 'Gallery berhasil ditampilkan',
+            data: result,
+        })
+    })
+    .catch(err => {
+        next(err)
+    })
+}
+
+exports.getSlideGallery = (req, res, next) => {
     const currentPage = req.query.page || 1
     const perPage = req.query.perPage || 5
     let totalItems
@@ -51,16 +64,10 @@ exports.getAllGallery = (req, res, next) => {
     .countDocuments()
     .then(count => {
         totalItems = count
-        return galleryModel.find()
+        return galleryModel.find().sort({createdAt:-1})
         .skip((parseInt(currentPage)-1)*parseInt(perPage))
         .limit(parseInt(perPage))
     })
-    .then()
-    .catch(err => {
-        next(err)
-    })
-
-    galleryModel.find()
     .then(result => {
         res.status(200).json({
             message: 'Gallery berhasil ditampilkan',
@@ -72,6 +79,26 @@ exports.getAllGallery = (req, res, next) => {
     })
     .catch(err => {
         next(err)
+    })
+}
+
+exports.getAllGalleryByCategory = (req, res, next) => {
+    const category = req.params.category   
+
+    galleryModel.find({category}) 
+    .then(result => { 
+        if(!result){   
+            const error = new Error('Blog Post tidak ditemukan')
+            error.errorStatus = 404 
+            throw error;            
+        }
+        res.status(200).json({ 
+            message: 'Data Blog Post Berhaisl Ditemukan',
+            data: result
+        })
+    })
+    .catch(err => { 
+        next(err)  
     })
 }
 
