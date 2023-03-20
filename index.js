@@ -1,12 +1,15 @@
 require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
 const path = require("path");
+const port = process.env.PORT || 4000;
+const { connectToDB } = require("./helpers/db.js");
 
 const app = express();
 const galleryApi = require("./api/gallery");
 const userApi = require("./api/user");
+
+connectToDB();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/images", express.static(path.join(__dirname, "/public/images")));
@@ -22,15 +25,8 @@ app.use((error, req, res, next) => {
   res.status(status).json({ message: message, date: data });
 });
 
-// Connect to the server and DB
-const port = process.env.PORT || 4000;
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    app.listen(port, () => {
-      console.log("Connected to mongodb and Express running on port " + port);
-    });
-  })
-  .catch((error) => console.log(error));
+app.listen(port, () => {
+  console.log(`Express running on port ${port}`);
+});
 
 module.exports = app;
