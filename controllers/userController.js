@@ -1,81 +1,90 @@
-const userModel = require("../models/userModel")
-const bcryptjs = require("bcryptjs")
-const config = require("../config/config")
-const jwt = require("jsonwebtoken")
-const createToken  =async(id)=>{
-    try{
-        const token = await jwt.sign({ _id:id}, config.secret_jwt)
-        return token;
-    } catch (error) {
-        res.status(400).send(error.message)
+const User = require("../models/userModel");
+const bcrypt = require("bcrypt");
+const config = require("../config/config");
+const jwt = require("jsonwebtoken");
+
+const createToken = async (id) => {
+  try {
+    const token = await jwt.sign({ _id: id }, config.secret_jwt, {
+      expiresIn: "2h",
+    });
+    return token;
+  } catch (error) {
+    throw new Error("Error generating token");
+  }
+};
+
+const securePassword = async (password) => {
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    return hashedPassword;
+  } catch (error) {
+    throw new Error("Error generating password");
+  }
+};
+
+exports.register = async (req, res) => {
+  const { nama, email, password } = req.body;
+  const spassword = await securePassword(password);
+
+  try {
+    const user = new User({ nama, email, password: spassword });
+
+    const exixts = await User.findOne({ email: req.body.email });
+
+    if (exixts) {
+      res
+        .status(400)
+        .send({ success: false, message: "This email is alredy exixts" });
     }
-}
 
-const securePassword = async(password) => {
-    try{
-        const passwordHash = await bcryptjs.hash(password,8);
-        return passwordHash
-    } catch (error){
-        res.status(400).send(error.message)
+    const newUser = await user.save();
+    res.status(200).send({ success: true, data: newUser });
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
+exports.login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      res
+        .status(401)
+        .send({ succes: false, message: "Login credentials incorrect" });
     }
-}
 
-exports.register = async(req, res) => {
-    const spassword = await securePassword(req.body.password)
+    const passwordMatch = await bcrypt.compare(password, user.password);
 
-    try {
-        const user = new userModel({
-            nama:req.body.nama,
-            email:req.body.email,
-            password:spassword
-        })
-
-        const userData = await userModel.findOne({email:req.body.email})
-
-        if(userData){
-            res.status(200).send({success:false, message:"This email is alredy exixts"})
-        } else{
-            const user_data = await user.save()
-            res.status(200).send({success:true, data:user_data})
-        }
-    } catch (error){
-        res.status(400).send(error.message)
+    if (!passwordMatch) {
+      res
+        .status(401)
+        .send({ succes: false, message: "Login credentials incorrect" });
     }
-}
 
-exports.login = async(req,res)=>{
-    try {
+    const tokenData = await createToken(user._id);
+    const userResult = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      passwoord: user.password,
+      type: user.type,
+      token: tokenData,
+    };
 
-        const email = req.body.email
-        const password = req.body.password
-        const userData = await userModel.findOne({ email:email})
-    
-        if(userData){
-            const passwordMatch = await bcryptjs.compare(password, userData.password)
-            if(passwordMatch){
-                const tokenData = await createToken(userData._id)
-                const userResult = {
-                    _id:userData._id,
-                    name:userData.name,
-                    email:userData.email,
-                    passwoord:userData.password,
-                    type:userData.type,
-                    token: tokenData
-                }
-                const response = {
-                    succes:true,
-                    message: "User Details",
-                    data:userResult
-                }
-                res.status(200).send(response)
-            } else  {
-            res.status(200).send({succes:false,message:"Login details are incorect"})
-            }
-        } else  {
-            res.status(200).send({succes:false,message:"Login details are incorect"})
-        }
+    const response = {
+      succes: true,
+      message: "User Details",
+      data: userResult,
+    };
 
-    } catch (error) {
-        res.status(400).send(error.message)
-    }
-}
+    res.status(200).send(response);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};

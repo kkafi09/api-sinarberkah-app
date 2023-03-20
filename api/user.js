@@ -1,14 +1,10 @@
-const express = require("express")
-const router = express()
+const express = require("express");
+const router = express.Router();
 
-const bodyParser = require("body-parser")
+const userController = require("../controllers/userController");
 
-router.use(bodyParser.json())
-router.use(bodyParser.urlencoded({extended:true}))
+router.post("/register", userController.register);
 
+router.post("/login", userController.login);
 
-const userController = require("../controllers/userController")
-router.post('/register', userController.register)
-router.post('/login', userController.login)
-
-module.exports = router
+module.exports = router;

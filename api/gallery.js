@@ -1,21 +1,29 @@
-const express = require('express')
-const {body} = require('express-validator')
-const router  = express.Router()
+const express = require("express");
+const multer = require("multer");
+const router = express.Router();
 
-const galleryController = require('../controllers/galleryController')
+const galleryController = require("../controllers/galleryController");
+const jwtAuth = require("../middlewares/jwtAuth");
 
-/* Router CREATE */
-router.post('/post', [
-    body('nama').isLength({min:10}).withMessage('Minimal 10 karakter'),
-    body('category').isLength({min:5}).withMessage('Minimal 5 karater'),
-    galleryController.createGallery
-])
+const uploader = multer();
 
-router.get('/posts', galleryController.getAllGallery)
-router.get('/postsslide', galleryController.getSlideGallery)
-router.get('/post/:category',galleryController.getAllGalleryByCategory) 
+router.post(
+  "/",
+  [jwtAuth.verifyToken, uploader.single("image")],
+  galleryController.createGallery
+);
 
-router.delete('/post/:galleryId', galleryController.deleteGallery)
+router.get("/", jwtAuth.verifyToken, galleryController.getGalleries);
+router.get(
+  "/:category",
+  jwtAuth.verifyToken,
+  galleryController.getGalleryByCategory
+);
 
+router.delete(
+  "/:galleryId",
+  jwtAuth.verifyToken,
+  galleryController.deleteGallery
+);
 
-module.exports = router
+module.exports = router;

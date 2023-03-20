@@ -1,136 +1,121 @@
-const {validationResult} = require('express-validator') 
-const path = require('path')
-const galleryModel = require('../models/galleryModel')
-const fs = require('fs')
+const Gallery = require("../models/galleryModel");
+const imagekit = require("../helpers/imagekit");
 
-exports.createGallery = (req, res, next) => {
-   const errors = validationResult(req)
+exports.createGallery = async (req, res) => {
+  try {
+    const uploadFile = await imagekit.upload({
+      file: req.file.buffer.toString("base64"),
+      fileName: req.file.originalname,
+      folder: "gallery",
+    });
 
-   if(!errors.isEmpty()){
-    const err = new Error('Terdapat kesalahan dalam upload gambar')
-    err.errorStatus = 400
-    err.data = errors.array()
-    throw err
-   }
+    const gallery = new Gallery({
+      title: req.body.title,
+      description: req.body.description,
+      category: req.body.category,
+      type: req.body.type,
+      image: {
+        image_id: uploadFile.fileId,
+        image_url: uploadFile.url,
+      },
+    });
 
-   if(!req.file){
-    const err = new Error('Image tidak sesuai')
-    err.errorStatus = 422
-    err.data = errors.array()
-    throw err
-   }
+    await gallery.save();
 
-   const nama = req.body.nama
-   const image = req.file.path
-   const category = req.body.category
-
-   const Upload = new galleryModel({
-    nama: nama,
-    category: category,
-    image: image
-   })
-
-   Upload.save()
-   .then(result => {
     res.status(201).json({
-        message: 'Upload image success',
-        data: result
-    })
-   })
-   .catch(err => {
-    console.log('err : ', err)
-   })
-}
+      message: "Success add new gallery",
+      data: gallery,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};
 
-exports.getAllGallery = (req, res, next) => {
-        galleryModel.find().sort({createdAt:-1})
-    .then(result => {
-        res.status(200).json({
-            message: 'Gallery berhasil ditampilkan',
-            data: result,
-        })
-    })
-    .catch(err => {
-        next(err)
-    })
-}
+exports.getGalleries = async (req, res, next) => {
+  const page = req.query.page || 1;
+  const quantity = req.query.quantity || 5;
+  let totalItems;
 
-exports.getSlideGallery = (req, res, next) => {
-    const currentPage = req.query.page || 1
-    const perPage = req.query.perPage || 5
-    let totalItems
-
-    galleryModel.find()
+  const gallery = await Gallery.find()
     .countDocuments()
-    .then(count => {
-        totalItems = count
-        return galleryModel.find().sort({createdAt:-1})
-        .skip((parseInt(currentPage)-1)*parseInt(perPage))
-        .limit(parseInt(perPage))
-    })
-    .then(result => {
-        res.status(200).json({
-            message: 'Gallery berhasil ditampilkan',
-            data: result,
-            total_data: totalItems,
-            per_page : parseInt(perPage),
-            current_page: currentPage
-        })
-    })
-    .catch(err => {
-        next(err)
-    })
-}
+    .then((count) => {
+      totalItems = count;
 
-exports.getAllGalleryByCategory = (req, res, next) => {
-    const category = req.params.category   
+      return Gallery.find()
+        .sort({ createdAt: -1 })
+        .skip((parseInt(page) - 1) * parseInt(quantity))
+        .limit(parseInt(quantity));
+    })
+    .catch((err) => {
+      next(err);
+    });
 
-    galleryModel.find({category}) 
-    .then(result => { 
-        if(!result){   
-            const error = new Error('Blog Post tidak ditemukan')
-            error.errorStatus = 404 
-            throw error;            
-        }
-        res.status(200).json({ 
-            message: 'Data Blog Post Berhaisl Ditemukan',
-            data: result
-        })
+  const metaModel = {
+    page: page,
+    quantity: quantity,
+    totalPage: Math.ceil(totalItems / quantity),
+    totalData: totalItems,
+  };
+
+  return res.status(200).json({
+    success: true,
+    data: gallery,
+    meta: metaModel,
+    message: "Successfully get gallery",
+  });
+};
+
+exports.getGalleryByCategory = (req, res, next) => {
+  const category = req.params.category;
+
+  Gallery.find({ category })
+    .then((result) => {
+      if (!result) {
+        const error = new Error("Blog Post tidak ditemukan");
+        error.errorStatus = 404;
+        throw error;
+      }
+      res.status(200).json({
+        status: true,
+        data: result,
+        message: "Data Blog Post Berhaisl Ditemukan",
+      });
     })
-    .catch(err => { 
-        next(err)  
-    })
-}
+    .catch((err) => {
+      next(err);
+    });
+};
 
 exports.deleteGallery = (req, res, next) => {
-    const galleryId = req.params.galleryId
+  const galleryId = req.params.galleryId;
 
-    galleryModel.findById(galleryId)
-    .then(post => {
-        if(!post){
-            const error = new Error('Gambar tidak ditemukan')
-            error.errorStatus = 404
-            throw error
-        }
-        console.log('galleryId',post)
-        removeImage(post.image)
-        return galleryModel.findByIdAndDelete(galleryId)
-    })
-    .then(result => {
-        res.status(200).json({
-            message: 'Gambar berhasil dihapus',
-            data: result
-        })
-    })
-    .catch(err => {
-        next(err)
-    })
-}
+  Gallery.findById(galleryId, (err, doc) => {
+    if (err) {
+      res.status(401).json({
+        succes: false,
+        message: "Galery not found",
+      });
+    }
 
-const removeImage = (filePath) => {
-    console.log('filePath', filePath) 
-    console.log('dir name', __dirname)
+    const image_id = doc.image.image_id;
 
-    filePath = path.join(__dirname,'../',filePath)
-    fs.unlink(filePath, err => console.log(err)) 
-}
+    doc.deleteOne((err) => {
+      if (err) {
+        return res.status(400).json({
+          succes: false,
+          message: "Fail to delete gallery",
+        });
+      }
+
+      imagekit.deleteFile(image_id).then((err, result) => {
+        return res.status(200).json({
+          succes: true,
+          message: "success delete gallery",
+          data: result,
+        });
+      });
+    });
+  });
+};

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose")
 const Schema = mongoose.Schema          
+
 const userModel = new Schema({
     nama: {
         type:String,
@@ -18,4 +19,4 @@ const userModel = new Schema({
 })
 
 
-module.exports = mongoose.model('userModel', userModel) 
+module.exports = mongoose.model("User", userModel); 
