@@ -18,7 +18,7 @@ const articleModel = new Schema(
       type: String,
       required: true,
     },
-    body: {
+    content: {
       type: String,
       required: true,
     },

@@ -9,11 +9,7 @@ const uploader = multer();
 
 router.get("/", articleController.getArticles);
 
-router.get(
-  "/:category",
-  jwtAuth.verifyToken,
-  articleController.getArticleByCategory
-);
+router.get("/:category", articleController.getArticleByCategory);
 
 router.post(
   "/",
@@ -21,7 +17,11 @@ router.post(
   articleController.createArticle
 );
 
-router.put("/:articleId", jwtAuth.verifyToken, articleController.updateArticle);
+router.put(
+  "/:articleId",
+  [jwtAuth.verifyToken, uploader.single("image")],
+  articleController.updateArticle
+);
 
 router.delete(
   "/:articleId",

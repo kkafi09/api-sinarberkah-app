@@ -12,7 +12,7 @@ const articleApi = require("./api/article");
 
 connectToDB();
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/images", express.static(path.join(__dirname, "/public/images")));
 
 app.use("/api/gallery/v1/", galleryApi);

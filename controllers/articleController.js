@@ -2,7 +2,7 @@ const Article = require("../models/articleModel");
 const imagekit = require("../helpers/imagekit");
 
 const createSlug = (document) => {
-  const slug = document.title
+  const slug = document
     .toString()
     .toLowerCase()
     .replace(/\s+/g, "-")
@@ -82,7 +82,7 @@ exports.getArticles = async (req, res, next) => {
   });
 };
 
-exports.getArticleByCategory = (req, res, next) => {
+exports.getArticleByCategory = (req, res) => {
   const category = req.params.category;
 
   Article.find({ category })
@@ -107,8 +107,8 @@ exports.getArticleByCategory = (req, res, next) => {
 };
 
 exports.updateArticle = async (req, res) => {
-  const articleId = req.params.articleId;
-  const { title, slug, body, category } = req.body;
+  const { articleId } = req.params;
+  const { title, content, category } = req.body;
 
   try {
     const article = await Article.findById(articleId);
@@ -130,6 +130,7 @@ exports.updateArticle = async (req, res) => {
       const result = await imagekit.upload({
         file: imageFile.buffer.toString("base64"),
         fileName: imageFile.originalname,
+        folder: "plato-article",
       });
 
       article.image.image_url = result.url;
@@ -160,7 +161,7 @@ exports.deleteArticle = (req, res, next) => {
 
   Article.findById(articleId, (err, doc) => {
     if (err) {
-      res.status(401).json({
+      return res.status(401).json({
         succes: false,
         message: "Article not found",
       });
