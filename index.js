@@ -12,6 +12,7 @@ const app = express();
 const galleryApi = require("./api/gallery");
 const userApi = require("./api/user");
 const articleApi = require("./api/article");
+const productApi = require("./api/product");
 
 connectToDB();
 
@@ -22,6 +23,7 @@ app.use("/images", express.static(path.join(__dirname, "/public/images")));
 app.use("/api/gallery/v1/", galleryApi);
 app.use("/api/user/v1/", userApi);
 app.use("/api/article/v1/", articleApi);
+app.use("/api/product/v1/", productApi);
 
 app.get("/", (req, res) => {
   res.status(200).json({
