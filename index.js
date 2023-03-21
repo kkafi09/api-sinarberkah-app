@@ -2,16 +2,20 @@ require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
+const cors = require("cors");
+
 const port = process.env.PORT || 4000;
 const { connectToDB } = require("./helpers/db.js");
 
 const app = express();
+
 const galleryApi = require("./api/gallery");
 const userApi = require("./api/user");
 const articleApi = require("./api/article");
 
 connectToDB();
 
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/images", express.static(path.join(__dirname, "/public/images")));
 
