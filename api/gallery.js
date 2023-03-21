@@ -13,12 +13,9 @@ router.post(
   galleryController.createGallery
 );
 
-router.get("/", jwtAuth.verifyToken, galleryController.getGalleries);
-router.get(
-  "/:category",
-  jwtAuth.verifyToken,
-  galleryController.getGalleryByCategory
-);
+router.get("/", galleryController.getGalleries);
+
+router.get("/:category", galleryController.getGalleryByCategory);
 
 router.delete(
   "/:galleryId",

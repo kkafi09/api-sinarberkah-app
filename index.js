@@ -8,6 +8,7 @@ const { connectToDB } = require("./helpers/db.js");
 const app = express();
 const galleryApi = require("./api/gallery");
 const userApi = require("./api/user");
+const articleApi = require("./api/article");
 
 connectToDB();
 
@@ -16,6 +17,14 @@ app.use("/images", express.static(path.join(__dirname, "/public/images")));
 
 app.use("/api/gallery/v1/", galleryApi);
 app.use("/api/user/v1/", userApi);
+app.use("/api/article/v1/", articleApi);
+
+app.get("/", (req, res) => {
+  res.status({
+    status: 200,
+    message: "Welcome to the gallery API. this service is working properly",
+  });
+});
 
 app.use((error, req, res, next) => {
   const status = error.erroStatus || 500;

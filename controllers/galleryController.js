@@ -6,7 +6,7 @@ exports.createGallery = async (req, res) => {
     const uploadFile = await imagekit.upload({
       file: req.file.buffer.toString("base64"),
       fileName: req.file.originalname,
-      folder: "gallery",
+      folder: "plato-gallery",
     });
 
     const gallery = new Gallery({
@@ -73,14 +73,14 @@ exports.getGalleryByCategory = (req, res, next) => {
   Gallery.find({ category })
     .then((result) => {
       if (!result) {
-        const error = new Error("Blog Post tidak ditemukan");
+        const error = new Error("gallery not found: " + category);
         error.errorStatus = 404;
         throw error;
       }
       res.status(200).json({
         status: true,
         data: result,
-        message: "Data Blog Post Berhaisl Ditemukan",
+        message: "success get gallery",
       });
     })
     .catch((err) => {
