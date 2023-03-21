@@ -20,7 +20,7 @@ app.use("/api/user/v1/", userApi);
 app.use("/api/article/v1/", articleApi);
 
 app.get("/", (req, res) => {
-  res.status({
+  res.status(200).json({
     status: 200,
     message: "Welcome to the gallery API. this service is working properly",
   });
