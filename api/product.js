@@ -20,7 +20,7 @@ router.put("/:productId", productController.getProducts);
 router.delete(
   "/:productId",
   jwtAuth.verifyToken,
-  galleryController.deleteGallery
+  productController.deleteProduct
 );
 
 module.exports = router;
