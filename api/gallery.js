@@ -3,7 +3,6 @@ const multer = require("multer");
 const router = express.Router();
 
 const galleryController = require("../controllers/galleryController");
-const jwtAuth = require("../middlewares/jwtAuth");
 
 const uploader = multer();
 
@@ -19,7 +18,6 @@ router.get("/:category", galleryController.getGalleryByCategory);
 
 router.delete(
   "/:galleryId",
-  jwtAuth.verifyToken,
   galleryController.deleteGallery
 );
 
