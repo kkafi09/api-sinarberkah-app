@@ -9,7 +9,7 @@ const uploader = multer();
 
 router.post(
   "/",
-  [jwtAuth.verifyToken, uploader.single("image")],
+  [uploader.single("image")],
   galleryController.createGallery
 );
 
