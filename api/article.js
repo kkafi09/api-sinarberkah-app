@@ -9,6 +9,8 @@ const uploader = multer();
 
 router.get("/", articleController.getArticles);
 
+router.get("/:articleId", articleController.getArticleById);
+
 router.get("/:category", articleController.getArticleByCategory);
 
 router.post(

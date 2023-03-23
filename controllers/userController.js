@@ -48,23 +48,25 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
+  try {
     const user = await User.findOne({ email });
+    console.log(email, password);
+    console.log("user", user);
 
     if (!user) {
-      res
-        .status(401)
+      return res
+        .status(400)
         .send({ succes: false, message: "Login credentials incorrect" });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
-      res
-        .status(401)
-        .send({ succes: false, message: "Login credentials incorrect" });
+      return res
+        .status(400)
+        .send({ succes: false, message: "Login credentials incorrect p" });
     }
 
     const tokenData = await createToken(user._id);
@@ -83,8 +85,8 @@ exports.login = async (req, res) => {
       data: userResult,
     };
 
-    res.status(200).send(response);
+    return res.status(200).send(response);
   } catch (error) {
-    res.status(500).send(error.message);
+    return res.status(500).send(error.message);
   }
 };

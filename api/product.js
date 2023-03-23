@@ -15,7 +15,7 @@ router.post(
 
 router.get("/", productController.getProducts);
 
-router.put("/:productId", productController.getProducts);
+router.put("/:productId", jwtAuth.verifyToken, productController.updateProduct);
 
 router.delete(
   "/:productId",

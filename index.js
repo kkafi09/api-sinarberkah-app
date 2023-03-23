@@ -17,7 +17,8 @@ const productApi = require("./api/product");
 connectToDB();
 
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use("/images", express.static(path.join(__dirname, "/public/images")));
 
 app.use("/api/gallery/v1/", galleryApi);

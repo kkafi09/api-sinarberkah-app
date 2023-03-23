@@ -82,16 +82,36 @@ exports.getArticles = async (req, res, next) => {
   });
 };
 
+exports.getArticleById = async (req, res) => {
+  const { articleId } = req.params;
+
+  Article.findById(articleId).then((article) => {
+    if (!article) {
+      return res.status(404).json({
+        status: false,
+        message: "Article not found",
+      });
+    }
+    return res.status(200).json({
+      status: true,
+      data: article,
+      message: "success get article",
+    });
+  });
+};
+
 exports.getArticleByCategory = (req, res) => {
   const category = req.params.category;
 
   Article.find({ category })
     .then((result) => {
       if (!result) {
-        const error = new Error("Article not found");
-        error.errorStatus = 404;
-        throw error;
+        return res.status(404).json({
+          status: false,
+          message: "Article not found",
+        });
       }
+
       return res.status(200).json({
         status: true,
         data: result,
