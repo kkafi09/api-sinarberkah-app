@@ -124,7 +124,7 @@ exports.deleteProduct = (req, res, next) => {
 
   Product.findById(productId, (err, doc) => {
     if (err) {
-      res.status(401).json({
+      res.status(404).json({
         succes: false,
         message: "Product not found",
       });
@@ -141,10 +141,9 @@ exports.deleteProduct = (req, res, next) => {
       }
 
       imagekit.deleteFile(image_id).then((err, result) => {
-        return res.status(200).json({
+        return res.status(204).json({
           succes: true,
-          message: "success delete Product",
-          data: result,
+          message: "Success delete Product",
         });
       });
     });

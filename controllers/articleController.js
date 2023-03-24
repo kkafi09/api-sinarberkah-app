@@ -181,7 +181,7 @@ exports.deleteArticle = (req, res, next) => {
 
   Article.findById(articleId, (err, doc) => {
     if (err) {
-      return res.status(401).json({
+      return res.status(404).json({
         succes: false,
         message: "Article not found",
       });
@@ -201,7 +201,6 @@ exports.deleteArticle = (req, res, next) => {
         return res.status(200).json({
           succes: true,
           message: "success delete article",
-          data: result,
         });
       });
     });
