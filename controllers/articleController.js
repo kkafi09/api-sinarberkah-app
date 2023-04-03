@@ -1,6 +1,11 @@
 const Article = require("../models/articleModel");
 const imagekit = require("../helpers/imagekit");
 
+/**
+ * function to handle create slug
+ * @param {*} document 
+ * @returns slug
+ */
 const createSlug = (document) => {
   const slug = document
     .toString()
@@ -14,6 +19,10 @@ const createSlug = (document) => {
   return slug;
 };
 
+/**
+ * function to handle create articles
+ * @param {title, content, category, user_id} req.body 
+ */
 exports.createArticle = async (req, res) => {
   const { title, content, category, user_id } = req.body;
   try {
@@ -48,6 +57,10 @@ exports.createArticle = async (req, res) => {
   }
 };
 
+/**
+ * function to handle get articles
+ * @param {page, quantity} req.query 
+ */
 exports.getArticles = async (req, res, next) => {
   const page = req.query.page || 1;
   const quantity = req.query.quantity || 5;
@@ -82,6 +95,10 @@ exports.getArticles = async (req, res, next) => {
   });
 };
 
+/**
+ * function to get articles by id
+ * @param {articleId} req.params 
+ */
 exports.getArticleById = async (req, res) => {
   const { articleId } = req.params;
 
@@ -100,6 +117,10 @@ exports.getArticleById = async (req, res) => {
   });
 };
 
+/**
+ * function to get articles from category
+ * @param {cateogory} req.params 
+ */
 exports.getArticleByCategory = (req, res) => {
   const category = req.params.category;
 
@@ -126,6 +147,11 @@ exports.getArticleByCategory = (req, res) => {
     });
 };
 
+/**
+ * function to update article
+ * @param {articleId} req.params
+ * @param {title, content, body} req.body
+ */
 exports.updateArticle = async (req, res) => {
   const { articleId } = req.params;
   const { title, content, category } = req.body;
@@ -176,6 +202,10 @@ exports.updateArticle = async (req, res) => {
   }
 };
 
+/**
+ * function to handle delete article
+ * @param {articleId} req.params
+ */
 exports.deleteArticle = (req, res, next) => {
   const articleId = req.params.articleId;
 

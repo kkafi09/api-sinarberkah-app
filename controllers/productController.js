@@ -1,6 +1,10 @@
 const Product = require("../models/productModel");
 const imagekit = require("../helpers/imagekit");
 
+/**
+ * function to handling create product
+ * @param {name, description, category, price} req.body 
+ */
 exports.createProduct = async (req, res) => {
   const { name, description, category, price } = req.body;
 
@@ -35,7 +39,11 @@ exports.createProduct = async (req, res) => {
   }
 };
 
-exports.getProducts = async (req, res, next) => {
+/**
+ * function to handling get product with pagination 
+ * @param {page, quantity} req.query (optional)
+ */
+exports.getProducts = async (req, res) => {
   const page = req.query.page || 1;
   const quantity = req.query.quantity || 5;
   let totalItems;
@@ -69,6 +77,11 @@ exports.getProducts = async (req, res, next) => {
   });
 };
 
+/**
+ * function to handle update product
+ * @param {productId} req.params 
+ * @param {name, description, category, price} req.body 
+ */
 exports.updateProduct = async (req, res) => {
   const { productId } = req.params;
   const { name, description, category, price } = req.body;
@@ -119,7 +132,11 @@ exports.updateProduct = async (req, res) => {
   }
 };
 
-exports.deleteProduct = (req, res, next) => {
+/**
+ * function to handle delete product
+ * @param {paramsId} req.params
+ */
+exports.deleteProduct = (req, res) => {
   const productId = req.params.ProductId;
 
   Product.findById(productId, (err, doc) => {

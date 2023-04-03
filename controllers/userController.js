@@ -3,6 +3,10 @@ const bcrypt = require("bcrypt");
 const config = require("../config/config");
 const jwt = require("jsonwebtoken");
 
+/**
+ * funtion for generating token jwt 
+ * @returns token
+ */
 const createToken = async (id) => {
   try {
     const token = await jwt.sign({ _id: id }, config.secret_jwt, {
@@ -14,6 +18,10 @@ const createToken = async (id) => {
   }
 };
 
+/**
+ * function to generate secure password using bcrypt algorithm 
+ * @returns password
+ */
 const securePassword = async (password) => {
   try {
     const salt = await bcrypt.genSalt(10);
@@ -25,6 +33,10 @@ const securePassword = async (password) => {
   }
 };
 
+/**
+ * function for handling register
+ * @param {nama, email, password} req.body 
+ */
 exports.register = async (req, res) => {
   const { nama, email, password } = req.body;
   const spassword = await securePassword(password);
@@ -47,13 +59,15 @@ exports.register = async (req, res) => {
   }
 };
 
+/**
+ * function for handling login
+ * @param { email, password} req.body 
+ */
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
     const user = await User.findOne({ email });
-    console.log(email, password);
-    console.log("user", user);
 
     if (!user) {
       return res

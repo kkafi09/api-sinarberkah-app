@@ -1,15 +1,18 @@
 
-# API Sinarberkah Plat Ornament
+# API Sinarberkah App 
+API Sinarberkah App. This API is for handling Sinarberkah App content. This API is handling article, gallery, product and user.
 
-API for Sinarberkah Plat Ornament app. This service is for user, gallery, and article
+## Endpoints
+List all available endpoints of the API with the following information:
 
-
-
-
-
-
+- HTTP Method: The HTTP method used to access the endpoint (GET, POST, PUT, DELETE, etc.).
+- Endpoint: The URL path of the endpoint.
+- Description: A brief description of what the endpoint does.
+- Request Parameters: A list of all required or optional parameters to be sent in the request.
+- Response: A sample response format for the endpoint.
 
 ## API Reference
+This API is using the standard write of an API endpoint
 
 - User
 ```http
@@ -27,8 +30,23 @@ API for Sinarberkah Plat Ornament app. This service is for user, gallery, and ar
 ```
 
 
+## License
+API Sinarberkah App is licensed under the MIT License.
 
 ## Authors
-
 - [@kkafi09](https://www.github.com/kkafi09)
 
+## Additional Resources
+- Node.js Documentation
+- ImageKit Documentation
+- MongoDB Documentation
+
+## Questions and Support
+If you have any questions or need support, please contact us at kafi.dev27@gmail.com.
+
+## Acknowledgments
+We would like to thank the following open-source projects for their contributions:
+
+- Express.js
+- MongoDB
+- ImageKit

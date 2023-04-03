@@ -1,6 +1,11 @@
 const Gallery = require("../models/galleryModel");
 const imagekit = require("../helpers/imagekit");
 
+/**
+ * function to hancle create gallery
+ * @param {title, description, caetegory, type} req.body 
+ * @param {image} req.file 
+ */
 exports.createGallery = async (req, res) => {
   try {
     const uploadFile = await imagekit.upload({
@@ -33,6 +38,10 @@ exports.createGallery = async (req, res) => {
   }
 };
 
+/**
+ * function to handle get gallery 
+ * @param {page, quantity} req.query (optional)
+ */
 exports.getGalleries = async (req, res, next) => {
   const page = req.query.page || 1;
   const quantity = req.query.quantity || 5;
@@ -67,6 +76,10 @@ exports.getGalleries = async (req, res, next) => {
   });
 };
 
+/**
+ * function to handle get gallery by category
+ * @param {category} req.params 
+ */
 exports.getGalleryByCategory = (req, res, next) => {
   const category = req.params.category;
 
@@ -88,6 +101,10 @@ exports.getGalleryByCategory = (req, res, next) => {
     });
 };
 
+/**
+ * function to handle delete gallery
+ * @param {galleryId} req.params 
+ */
 exports.deleteGallery = (req, res, next) => {
   const galleryId = req.params.galleryId;
 
