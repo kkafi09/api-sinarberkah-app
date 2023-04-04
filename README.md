@@ -31,15 +31,13 @@ This API is using the standard write of an API endpoint
 
 
 ## License
-API Sinarberkah App is licensed under the MIT License.
+API Sinarberkah App is licensed under the [MIT License](https://github.com/kkafi09/api-sinarberkah-app/blob/main/LICENSE).
 
 ## Authors
 - [@kkafi09](https://www.github.com/kkafi09)
 
 ## Additional Resources
-- Node.js Documentation
-- ImageKit Documentation
-- MongoDB Documentation
+- [ImageKit Documentation](https://github.com/imagekit-developer/imagekit-nodejs)
 
 ## Questions and Support
 If you have any questions or need support, please contact us at kafi.dev27@gmail.com.
@@ -50,3 +48,4 @@ We would like to thank the following open-source projects for their contribution
 - Express.js
 - MongoDB
 - ImageKit
+- Mongoose
