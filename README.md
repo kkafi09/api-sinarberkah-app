@@ -34,7 +34,8 @@ This API is using the standard write of an API endpoint
 API Sinarberkah App is licensed under the [MIT License](https://github.com/kkafi09/api-sinarberkah-app/blob/main/LICENSE).
 
 ## Authors
-- [@kkafi09](https://www.github.com/kkafi09)
+- [@kkafi09](https://github.com/kkafi09)
+- [@ValenNz](https://github.com/ValenNz)
 
 ## Additional Resources
 - [ImageKit Documentation](https://github.com/imagekit-developer/imagekit-nodejs)
