@@ -15,19 +15,18 @@ router.get("/:category", articleController.getArticleByCategory);
 
 router.post(
   "/",
-  [jwtAuth.verifyToken, uploader.single("image")],
+  [uploader.single("image")],
   articleController.createArticle
 );
 
 router.put(
   "/:articleId",
-  [jwtAuth.verifyToken, uploader.single("image")],
+  [uploader.single("image")],
   articleController.updateArticle
 );
 
 router.delete(
   "/:articleId",
-  jwtAuth.verifyToken,
   articleController.deleteArticle
 );
 
